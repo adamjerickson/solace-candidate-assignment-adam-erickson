@@ -31,9 +31,9 @@ export async function GET(request: Request) {
 
   const query = whereConditions
     ? baseQuery.where(whereConditions)
-    : baseQuery;
+    : baseQuery
 
-  const data = await query.orderBy(asc(advocates.id)).limit(limit + 1);
+  const data = await query.orderBy(asc(advocates.lastName), asc(advocates.firstName)).limit(limit + 1);
   const hasNextPage = data.length > limit;
   const results = hasNextPage ? data.slice(0, -1) : data;
   const nextCursor = hasNextPage ? results[results.length - 1].id : null;

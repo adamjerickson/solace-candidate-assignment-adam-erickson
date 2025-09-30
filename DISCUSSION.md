@@ -8,12 +8,14 @@
   - Depends if we are using api gateway or other things that might already have some of these features)
 
 ### Dev Best Practices, Error Handling, and Instrumentation
+- Accessibility improvements (screen reader tests/access, color contrast validation)
 - Tests (unit, integration, possibly e2e)
 - Logging, front end back end. do you use DataDog or similar?
 - Analytics? Do you use gtm, Segment, , Amplitude? 
 - Error handling (there is basically none right now)
 - Refactor, perhaps (consolidate types, split up the route.ts assuming we have other backend elements, we probably need services, modules, controllers etc (if using something like NestJS)) 
   - `page.tsx` is a little overloaded. Refactor a bit, perhaps split up into separate files.
+- Bring in tailwind-merge and clsx for className normalization.
 
 ### Features and UI Enhancements
 - Sorting

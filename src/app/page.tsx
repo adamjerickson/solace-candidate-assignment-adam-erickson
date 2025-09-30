@@ -30,7 +30,7 @@ function SearchPanel({
           <input
             type="text"
             placeholder="Search by name, city, degree, specialties..."
-            className="w-full px-6 py-4 pl-14 pr-6 text-base rounded-md bg-green-100 border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-500 outline-none"
+            className="w-full px-6 py-4 pl-14 pr-6 text-base text-bodyFontDark rounded-md bg-green-100 border border-gray-300 focus:border-green-500 focus:ring-2 focus:ring-green-500 outline-none"
             onChange={onChange}
           />
           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -74,12 +74,12 @@ function AdvocateRow({ advocate }: { advocate: Advocate }): JSX.Element {
       </div>
 
       <div>
-        <h4 className="w-full text-md font-medium mt-2">Specialties:</h4>
+        <h4 className="w-full text-md font-medium mt-2  text-bodyText">Specialties:</h4>
         <div className="flex flex-wrap pl-2 gap-2 py-4">
           {advocate.specialties.sort().map((specialty) => (
             <span
               key={specialty}
-              className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100"
+              className="inline-flex items-center px-3 py-1 text-bodyText rounded-full text-xs font-medium bg-green-100"
             >
               {specialty}
             </span>
@@ -95,15 +95,13 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Pagination state
   const [currentCursor, setCurrentCursor] = useState<string | null>(null);
   const [hasNextPage, setHasNextPage] = useState(false);
   const [pageHistory, setPageHistory] = useState<(string | null)[]>([null]); // Track cursors for previous pages
   const [currentPage, setCurrentPage] = useState(0);
 
-  const pageSize = 10;
+  const pageSize = 10; // Artificially low to show pagination.
 
-  // Fetch advocates with pagination
   const fetchAdvocates = useCallback(async (cursor: string | null = null, isNewSearch = false, search = '') => {
     setLoading(true);
     try {
@@ -113,7 +111,7 @@ export default function Home() {
         params.set('cursor', cursor);
       }
       if (search) {
-        params.set('search', search); // You'll implement this in the API later
+        params.set('search', search);
       }
 
       const response = await fetch(`/api/advocates?${params}`);
@@ -141,7 +139,7 @@ export default function Home() {
     fetchAdvocates();
   }, [fetchAdvocates]);
 
-  // Handle search with debouncing when searchTerm changes
+  // Debounced search on searchTerm change
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       fetchAdvocates(null, true, searchTerm); // Reset to first page on search
@@ -186,8 +184,8 @@ export default function Home() {
           </div>
         )}
 
-        <div className="bg-white rounded-md shadow-xl overflow-hidden">
-          <div className="overflow-x-auto">
+        <div className="bg-white rounded-md shadow-xl">
+          <div >
             {advocates.map((advocate) => (
               <AdvocateRow key={advocate.id} advocate={advocate} />
             ))}

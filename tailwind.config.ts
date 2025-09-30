@@ -16,9 +16,12 @@ const config: Config = {
       colors: {
         white: '#fff',
         black: '#000000',
+        bodyText: '#5a5a5a',
+
         grey: {
           100: '#e9e9e9',
           500: '#9a9a9a',
+          600: '#6a6a6a',
           700: '#5a5a5a',
           900: '#101010',
         },
@@ -41,15 +44,6 @@ const config: Config = {
           600: '#d4e2dd4d',
           900: '#d4e2dd1f',
         },
-
-
-        // Additional UI Colors
-        bodyFontDark: '#6d6d6d',
-        headingDark: '#150438',
-        linearColorThree: '#e0ecff',
-        buttonBackgroundDark: '#131218',
-        themeColor: '#116df8',
-        gray600: '#475467',
       },
     },
   },
