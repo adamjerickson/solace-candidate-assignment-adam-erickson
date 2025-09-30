@@ -2,7 +2,7 @@ import { and, asc, gt, ilike, or, sql } from "drizzle-orm";
 import db from "../../../db";
 import { advocates } from "../../../db/schema";
 
-const DEFAULT_PAGE_SIZE = 10;
+const DEFAULT_PAGE_SIZE = 100;
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
