@@ -95,20 +95,20 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const [currentCursor, setCurrentCursor] = useState<string | null>(null);
+  const [offset, setOffset] = useState<string | null>(null);
   const [hasNextPage, setHasNextPage] = useState(false);
-  const [pageHistory, setPageHistory] = useState<(string | null)[]>([null]); // Track cursors for previous pages
+  const [pageHistory, setPageHistory] = useState<(string | null)[]>([null]); // Track offset for previous pages
   const [currentPage, setCurrentPage] = useState(0);
 
-  const pageSize = 10; // Artificially low to show pagination.
+  const pageSize = 5; // Artificially low to show pagination.
 
-  const fetchAdvocates = useCallback(async (cursor: string | null = null, isNewSearch = false, search = '') => {
+  const fetchAdvocates = useCallback(async (offset: string | null = null, isNewSearch = false, search = '') => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
       params.set('limit', pageSize.toString());
-      if (cursor) {
-        params.set('cursor', cursor);
+      if (offset) {
+        params.set('offset', offset);
       }
       if (search) {
         params.set('search', search);
@@ -126,7 +126,7 @@ export default function Home() {
       }
 
       setHasNextPage(jsonResponse.pagination.hasNextPage);
-      setCurrentCursor(jsonResponse.pagination.nextCursor);
+      setOffset(jsonResponse.pagination.nextOffset);
     } catch (error) {
       console.error('Failed to fetch advocates:', error);
     } finally {
@@ -153,11 +153,11 @@ export default function Home() {
   };
 
   const goToNextPage = () => {
-    if (hasNextPage && currentCursor) {
-      const newPageHistory = [...pageHistory, currentCursor];
+    if (hasNextPage && offset !== null) {
+      const newPageHistory = [...pageHistory, offset];
       setPageHistory(newPageHistory);
       setCurrentPage(currentPage + 1);
-      fetchAdvocates(currentCursor, false, searchTerm);
+      fetchAdvocates(offset, false, searchTerm);
     }
   };
 
@@ -166,8 +166,8 @@ export default function Home() {
       const newPageHistory = pageHistory.slice(0, -1);
       setPageHistory(newPageHistory);
       setCurrentPage(currentPage - 1);
-      const previousCursor = newPageHistory[newPageHistory.length - 1];
-      fetchAdvocates(previousCursor, false, searchTerm);
+      const prevOffset = newPageHistory[newPageHistory.length - 1];
+      fetchAdvocates(prevOffset, false, searchTerm);
     }
   };
 

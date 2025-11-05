@@ -1,4 +1,4 @@
-import { and, asc, gt, ilike, or, sql } from "drizzle-orm";
+import { asc, ilike, or, sql } from "drizzle-orm";
 import db from "../../../db";
 import { advocates } from "../../../db/schema";
 
@@ -6,7 +6,7 @@ const DEFAULT_PAGE_SIZE = 100;
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
-  const cursor = url.searchParams.get('cursor');
+  const offset = url.searchParams.get('offset');
   const limit = parseInt(url.searchParams.get('limit') || DEFAULT_PAGE_SIZE.toString());
   const search = url.searchParams.get('search');
   const baseQuery = db.select().from(advocates);
@@ -14,7 +14,7 @@ export async function GET(request: Request) {
 
   if (search?.trim()) {
     const searchTerm = `%${search.trim()}%`;
-    const searchConditions = or(
+    whereConditions = or(
       ilike(advocates.firstName, searchTerm),
       ilike(advocates.lastName, searchTerm),
       ilike(advocates.city, searchTerm),
@@ -22,26 +22,27 @@ export async function GET(request: Request) {
       sql`${advocates.specialties}::text ILIKE ${searchTerm}`,
       sql`${advocates.yearsOfExperience}::text ILIKE ${searchTerm}`
     );
-    whereConditions = cursor
-      ? and(searchConditions, gt(advocates.id, Number(cursor)))
-      : searchConditions;
-  } else if (cursor) {
-    whereConditions = gt(advocates.id, Number(cursor));
   }
 
   const query = whereConditions
     ? baseQuery.where(whereConditions)
     : baseQuery
 
-  const data = await query.orderBy(asc(advocates.lastName), asc(advocates.firstName)).limit(limit + 1);
+  const data = await query
+    .orderBy(
+      asc(advocates.lastName),
+      asc(advocates.firstName))
+    .offset(offset ? Number(offset) : 0)
+    .limit(limit + 1); // Fetch one extra to check for next page
+
   const hasNextPage = data.length > limit;
   const results = hasNextPage ? data.slice(0, -1) : data;
-  const nextCursor = hasNextPage ? results[results.length - 1].id : null;
+  const nextOffset = hasNextPage ? (Number(offset) ?? 0) + results.length + 1 : null;
 
   return Response.json({
     data: results,
     pagination: {
-      nextCursor,
+      nextOffset,
       hasNextPage,
       limit
     }

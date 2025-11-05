@@ -5,7 +5,7 @@
 - API input/output validation with zod
 - Caching - depends on stack, Redis is most likely.
 - Possibly rate limiting on the API
-  - Depends if we are using api gateway or other things that might already have some of these features)
+  - Depends if we are using api gateway or other things that might already have some of these features
 
 ### Dev Best Practices, Error Handling, and Instrumentation
 - Accessibility improvements (screen reader tests/access, color contrast validation)
